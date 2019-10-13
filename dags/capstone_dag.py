@@ -90,12 +90,20 @@ load_immi = PostgresOperator(
     sql="load_immigration.sql"
 )
 
-# data quality checks
-cleanup = PostgresOperator(
-    task_id='cleanup',  
+# load fact table
+load_sum = PostgresOperator(
+    task_id='load_summary',  
     dag=dag,
     postgres_conn_id="postgres",
-    sql="DROP SCHEMA IF EXISTS staging CASCADE"
+    sql="load_summary.sql"
+)
+
+# data quality checks
+data_quality = PostgresOperator(
+    task_id='data_quality',  
+    dag=dag,
+    postgres_conn_id="postgres",
+    sql="data_quality.sql"
 )
 
 # cleanup (remove staging)
@@ -122,6 +130,4 @@ load_cities >> load_temperature
 
 load_temperature, load_cities, load_countries >> load_immi
 
-load_immi >> data_quality
-
-data_quality >> cleanup
+load_immi >> load_sum >> data_quality >> cleanup

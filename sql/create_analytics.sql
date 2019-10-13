@@ -4,6 +4,9 @@
 CREATE SCHEMA IF NOT EXISTS immigration;
 COMMENT ON SCHEMA immigration IS 'Immigration Schema';
 
+CREATE SCHEMA IF NOT EXISTS summary;
+COMMENT ON SCHEMA summary IS 'Summary Schema';
+
 SET search_path = public, immigration;
 
 -- General statements
@@ -23,7 +26,7 @@ SET default_with_oids = false;
 -- countries dimension table
 CREATE TABLE IF NOT EXISTS immigration.countries (
     id                          serial primary key,
-    country                     character varying not null
+    country                     character varying not null UNIQUE
 );
 
 -- cities dimension table
@@ -31,20 +34,15 @@ CREATE TABLE IF NOT EXISTS immigration.cities (
     id                          serial primary key,
     city                        character varying not null,
     state                       character varying,
-    country_id                  int not null REFERENCES immigration.countries(id)
-);
-
--- temperature dimension table
-CREATE TABLE IF NOT EXISTS immigration.temperature (
-    id                          serial primary key,
-    city_id                     int not null REFERENCES immigration.cities(id),
-    avg_temp                    numeric not null
+    country_id                  int not null REFERENCES immigration.countries(id),
+    avg_temp                    numeric not null,
+    UNIQUE(city, state)
 );
 
 -- visa type
 CREATE TABLE IF NOT EXISTS immigration.visas (
     id                          int primary key,
-    type                        character varying not null UNIQUE
+    visa                        character varying not null UNIQUE
 );
 
 INSERT INTO immigration.visas
@@ -56,7 +54,7 @@ VALUES
 -- travel modes type
 CREATE TABLE IF NOT EXISTS immigration.modes (
     id                          int primary key,
-    type                        character varying not null UNIQUE
+    mode                        character varying not null UNIQUE
 );
 
 INSERT INTO immigration.modes
@@ -81,4 +79,16 @@ CREATE TABLE IF NOT EXISTS immigration.immigrants (
     depdate                     timestamp with time zone not null,
     i94visa                     int not null REFERENCES immigration.visas(id),
     CHECK ((gender = 'F') or (gender = 'M') or (gender is null))
+);
+
+CREATE TABLE IF NOT EXISTS summary.summary (
+    id                          serial primary key,
+    i94yr                       int not null,
+    i94mon                      int not null,
+    i94res                      varchar not null,
+    i94port                     varchar not null,
+    i94mode                     varchar not null,
+    i94visa                     varchar not null,
+    avg_temp                    double precision not null,
+    count                       int not null
 );

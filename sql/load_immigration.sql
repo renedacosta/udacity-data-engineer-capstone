@@ -20,9 +20,9 @@ SELECT
 	ci.city_id as i94port,
 	gender,
 	CAST(biryear as int) as biryear,
-	to_timestamp(arrdate) as arrdate,
+	to_timestamp(1451653201 + arrdate-20454) as arrdate,
 	CAST(i94mode as int) as i94mode,
-	to_timestamp(depdate) as depdate,
+	to_timestamp(1451653201 + depdate-20454) as depdate,
 	CAST(i94visa as int) as i94visa
 FROM staging.immigration as immi
 LEFT JOIN countries as co1 ON immi.i94res = co1.i94res

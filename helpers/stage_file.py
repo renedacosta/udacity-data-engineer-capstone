@@ -2,11 +2,8 @@ import psycopg2 as ps
 import pandas as pd
 from pathlib import Path
 from io import StringIO
-# from airflow.hooks.postgres_hook import PostgresHook
-# postgres = PostgresHook(postgres_conn_id=self.postgres_conn_id)
-# postgres.run(self.sql % (fr.filename, key, fr.timestamp))
 
-conn = ps.connect(host='localhost', database='test', user='postgres', password='admin')
+conn = ps.connect("postgresql://{}:{}@{}/{}".format(os.getenv(DBUSER), os.getenv(DBPW), os.getenv(DBHOST), os.getenv(DB)))
 cur = conn.cursor()
 
 def load_staging_csv(file:str, table:str, delimiter:str=',') -> None:
@@ -47,8 +44,9 @@ def load_staging_sas(file:str) -> None:
     conn.commit()
     csv.close()
 
-if __name__ == '__main__':
-    load_staging_csv('./data/GlobalLandTemperaturesByCity.csv', 'staging.city_temp')
-    load_staging_csv('./data/i94port.csv', 'staging.i94port')
-    load_staging_csv('./data/i94res.csv', 'staging.i94res', ';')
-    load_staging_sas('./data/immigration_data_sample.csv')
+#  debugging
+# if __name__ == '__main__':
+#     load_staging_csv('./data/GlobalLandTemperaturesByCity.csv', 'staging.city_temp')
+#     load_staging_csv('./data/i94port.csv', 'staging.i94port')
+#     load_staging_csv('./data/i94res.csv', 'staging.i94res', ';')
+#     load_staging_sas('./data/i94_sep16_sub.sas7bdat')
