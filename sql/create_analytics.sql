@@ -1,9 +1,11 @@
 --
 -- Create inital schema 
 --
+DROP SCHEMA IF EXISTS immigration CASCADE;
 CREATE SCHEMA IF NOT EXISTS immigration;
 COMMENT ON SCHEMA immigration IS 'Immigration Schema';
 
+DROP SCHEMA IF EXISTS summary CASCADE;
 CREATE SCHEMA IF NOT EXISTS summary;
 COMMENT ON SCHEMA summary IS 'Summary Schema';
 

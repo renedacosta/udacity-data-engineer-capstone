@@ -19,6 +19,7 @@ The project folder is structured as follows
 ├── LICENSE
 ├── .gitignore
 ├── Capstone Project Template.ipynb <-- This jupyter notebook file contains an overview and write up of the project
+├── main.py                   <-- This is the main python execution script 
 ├── commands                  <-- This folder contains shell commands for running airflow 
 |    └── start.sh             <-- Shell script to start airflow
 ├── dags                      <-- This folder contains the dags to be run
@@ -31,7 +32,6 @@ The project folder is structured as follows
 ## Installation
 To run this project the following dependencies are needed:
 - jupyter notebook
-- airflow
 - psycopg2
 
 ```python
@@ -39,9 +39,8 @@ pip install -r requirements.txt
 ```
 
 ## Usage
-To run airflow:
 ```bash
-./commands/start
+python main
 ```
 
 ## Environment variables
@@ -51,4 +50,4 @@ To run airflow:
 - DB: database name
 
 ## Project write up 
-The full project write up is provided in (Capstone Project Template.ipynb)[./Capstone Project Template.ipynb]
+The full project write up is provided in [Capstone Project Template.ipynb](Capstone&#32;Project&#32;Template.ipynb)

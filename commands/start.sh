@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo >> ~/aiflow/aiflow.cfg
+
 # Start airflow
 airflow initdb
 airflow scheduler --daemon

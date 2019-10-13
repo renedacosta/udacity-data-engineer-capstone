@@ -41,19 +41,19 @@ stage_temperature = PythonOperator(
     task_id='stage_temperature',  
     dag=dag,
     python_callable=load_staging_csv,
-    op_kwargs={'file':'./data/GlobalLandTemperaturesByCity.csv', 'table':'staging.city_temp'}
+    op_kwargs={'file':'./data/GlobalLandTemperaturesByCity.csv', 'table':'staging.city_temp', 'hook':'postgres'}
 )
 stage_i94port = PythonOperator(
     task_id='stage_i94port',  
     dag=dag,
     python_callable=load_staging_csv,
-    op_kwargs={'file':'./data/i94port.csv', 'table':'staging.i94port'}
+    op_kwargs={'file':'./data/i94port.csv', 'table':'staging.i94port', 'hook':'postgres'}
 )
 stage_i94res = PythonOperator(
     task_id='stage_i94port',  
     dag=dag,
     python_callable=load_staging_sas,
-    op_kwargs={'file':'./data/i94res.csv', 'table':'staging.i94res'}
+    op_kwargs={'file':'./data/i94res.csv', 'table':'staging.i94res', 'hook':'postgres'}
 )
 # 
 stage_immi = []
@@ -64,7 +64,7 @@ for f in glob.glob('../data/*sas7bdat'):
             task_id=f'stage_immi_{name}',
             dag=dag,
             python_callable=load_staging_sas,
-            op_kwargs={'file':'./data/immigration_data_sample.csv'}
+            op_kwargs={'file':'./data/immigration_data_sample.csv', 'hook':'postgres'}
         )
     )
 # load dimension loads with data checks
