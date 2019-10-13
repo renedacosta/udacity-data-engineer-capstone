@@ -22,10 +22,10 @@ if __name__ == "__main__":
     # stage files
     #################
     try:
-        load_staging_csv('./data/GlobalLandTemperaturesByCity.csv', 'staging.city_temp')
+        load_staging_csv('../../data2/GlobalLandTemperaturesByCity.csv', 'staging.city_temp')
         load_staging_csv('./data/i94port.csv', 'staging.i94port')
         load_staging_csv('./data/i94res.csv', 'staging.i94res', ';')
-        for f in glob.glob('./data/immigration_data_sample.csv'):     #<-----
+        for f in glob.glob('../../*/*.sas7bdat'):
             load_staging_sas(f)
         print('Data staged')
     except Exception as e:

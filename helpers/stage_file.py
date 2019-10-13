@@ -27,8 +27,8 @@ def load_staging_csv(file:str, table:str, delimiter:str=',') -> None:
     csv.close()
 
 def load_staging_sas(file:str) -> None:
-    # df = pd.read_sas(file, 'sas7bdat', encoding="ISO-8859-1")
-    df = pd.read_csv(file, encoding="ISO-8859-1")
+    df = pd.read_sas(file, 'sas7bdat', encoding="ISO-8859-1")
+    # df = pd.read_csv(file, encoding="ISO-8859-1")
     df = df[[
         'i94yr','i94mon','i94cit','i94res','i94port','arrdate',
         'i94mode','depdate','i94bir','i94visa','gender', 'biryear'
