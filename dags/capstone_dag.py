@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 import os
+import glob
+from pathlib import Path
 from airflow import DAG
 from airflow.operators import PostgresOperator
 from helpers.stage_file import load_staging_csv, load_staging_sas
@@ -53,14 +55,18 @@ stage_i94res = PythonOperator(
     python_callable=load_staging_sas,
     op_kwargs={'file':'./data/i94res.csv', 'table':'staging.i94res'}
 )
-# add for loop here
-stage_immi = PythonOperator(
-    task_id='stage_immi',  
-    dag=dag,
-    python_callable=load_staging_sas,
-    op_kwargs={'file':'./data/immigration_data_sample.csv'}
-)
-
+# 
+stage_immi = []
+for f in glob.glob('../data/*sas7bdat'):
+    name = Path(f).name
+    stage_immi.append( 
+        PythonOperator(
+            task_id=f'stage_immi_{name}',
+            dag=dag,
+            python_callable=load_staging_sas,
+            op_kwargs={'file':'./data/immigration_data_sample.csv'}
+        )
+    )
 # load dimension loads with data checks
 load_countries = PostgresOperator(
     task_id='load_countries',  
@@ -74,13 +80,6 @@ load_cities = PostgresOperator(
     postgres_conn_id="postgres",
     sql="load_cities.sql"
 )
-load_temperature = PostgresOperator(
-    task_id='load_temperature',  
-    dag=dag,
-    postgres_conn_id="postgres",
-    sql="load_temperature.sql"
-)
-
 
 # load fact table
 load_immi = PostgresOperator(
@@ -116,18 +115,15 @@ cleanup = PostgresOperator(
 
 
 # Pipeline
-
-
 create_staging >> stage_i94port
 create_staging >> stage_i94res
 create_staging >> stage_temperature
 create_staging >> stage_immi
 
 stage_i94port >> load_countries
-stage_i94res, stage_temperature >> load_cities
+[stage_i94res, stage_temperature] >> load_cities
 
-load_cities >> load_temperature
-
-load_temperature, load_cities, load_countries >> load_immi
+stage_immi >> load_immi
+load_cities, load_countries >> load_immi
 
 load_immi >> load_sum >> data_quality >> cleanup
